@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% load widget_tweaks %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-8">
+                <ul class="nav nav-links my-3 mb-lg-2 mx-n3">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page"
+                                            href="#"><span>Всего </span><span
+                            class="text-body-tertiary fw-semibold">(68817)</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><span>Абитуриенты </span><span
+                            class="text-body-tertiary fw-semibold">(70348)</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><span>Обучаются </span><span
+                            class="text-body-tertiary fw-semibold">(17)</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="#"><span>Выпустились </span><span
+                            class="text-body-tertiary fw-semibold">(810)</span></a></li>
+                </ul>
+
+                <div class="my-4 d-flex">
+                    <button class="btn btn-primary"><span class="fas fa-plus me-2"></span>Добавить запись
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover fw-light">
+                        <thead>
+                        <tr>
+                            <th scope="col">
+                                <div class="form-check ">
+                                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                </div>
+                            </th>
+                            <th scope="col"></th>
+                            <th scope="col">Фамилия, имя, отчество</th>
+                            <th scope="col">Адрес</th>
+                            <th scope="col">Специальность</th>
+                            <th scope="col">Начало обучения</th>
+                            <th scope="col">Окончание обучения</th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-borderless">
+                        {% for cadet in cadet_list %}
+                            <tr class="align-middle">
+                                <th scope="row" class="text-center align-middle">
+                                    <div class="form-check ">
+                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                    </div>
+
+                                </th>
+                                <td>
+                                    {% if cadet.photo %}
+                                        <img src="{{ cadet.photo.url }}" class="img-thumbnail" alt="..."
+                                             style="width: 50px;">
+                                    {% else %}
+                                        <img src="{% static 'kis/img/without_photo.jpg' %}" class="img-thumbnail"
+                                             alt="..."
+                                             style="width: 50px;">
+                                    {% endif %}
+
+                                </td>
+                                <td>
+                                    <a href="{% url 'kis:cadet-update' cadet.id %}">{{ cadet.last_name_rus }}<br>
+                                        {{ cadet.first_name_rus }}<br>{{ cadet.patronymic_rus }}</a>
+                                </td>
+                                <td>{{ cadet.address }}</td>
+                                <td>{{ cadet.speciality|default:"" }}</td>
+                                <td>{{ cadet.academy_start_year|default:"" }}</td>
+                                <td>{{ cadet.academy_end_year|default:"" }}</td>
+                            </tr>
+                        {% endfor %}
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-4" style="max-height: 90vh;overflow: auto">
+                 <h5 class="my-3">Поиск по критериям</h5>
+                <form method="get" action="{% url 'kis:cadet-list' %}">
+                    <div class="mb-3">
+                        <label class="form-label">Фамилия</label>
+                        {% render_field filter.form.last_name class+="form-control" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Адрес (содержит)</label>
+                        {% render_field filter.form.school_graduating_year_gte class+="form-control" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Год окончания школы (с)</label>
+                        {% render_field filter.form.school_graduating_year_gte class+="form-control" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Год окончания школы (по)</label>
+                        {% render_field filter.form.school_graduating_year_lte class+="form-control" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Средний балл аттестата (с)</label>
+                        {% render_field filter.form.school_average_score_gte class+="form-control" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Средний балл аттестата (по)</label>
+                        {% render_field filter.form.school_average_score_lte class+="form-control" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Специальность</label>
+                        {% render_field filter.form.speciality class+="form-control" %}
+                    </div>
+                     <div class="mb-3">
+                        <label class="form-label">Группа</label>
+                        {% render_field filter.form.group class+="form-control" %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Поиск</button>
+                    <a class="btn btn-primary" href="{% url 'kis:cadet-list' %}">Сбросить фильтр</a>
+
+
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+
+{% endblock %}
+

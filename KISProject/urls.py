@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', RedirectView.as_view(url="/kis")),
+    path('', RedirectView.as_view(url="/kis/")),
     path('admin/', admin.site.urls),
     path('kis/', include('kis.urls'))
 ]

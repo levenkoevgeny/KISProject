@@ -161,7 +161,7 @@ class PunishmentKind(models.Model):
 
 class Punishment(models.Model):
     punishment_cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="Punishment cadet")
-    punishment_kind = models.ForeignKey(EncouragementKind, on_delete=models.CASCADE, verbose_name="Punishment kind")
+    punishment_kind = models.ForeignKey(PunishmentKind, on_delete=models.CASCADE, verbose_name="Punishment kind")
     punishment_start_date = models.DateField(verbose_name="Punishment start date", blank=True, null=True)
     punishment_expiration_date = models.DateField(verbose_name="Punishment expiration date", blank=True, null=True)
     punishment_extra_data = models.TextField(verbose_name="Punishment extra data", blank=True, null=True)
@@ -171,8 +171,8 @@ class Punishment(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = 'Поощрение'
-        verbose_name_plural = 'Поощрения'
+        verbose_name = 'Взыскание'
+        verbose_name_plural = 'Взыскания'
 
 
 class RankHistory(models.Model):

@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <div class="container">
+        <div class="mb-4"></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div>
+                    {% if obj.photo %}
+                        <img src="{{ obj.photo.url }}" class="rounded-2" alt="..." style="width: 100%">
+                    {% else %}
+                        <img src="{% static 'kis/img/without_photo.jpg' %}" class="rounded-2" alt="..."
+                             style="width: 100%">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div>
+                    <div class="card-body">
+                        <h1 class="card-title">{{ obj.last_name_rus }} {{ obj.first_name_rus }} {{ obj.patronymic_rus }}</h1>
+                        <h5 class="my-0">Дата рождения - {{ obj.date_of_birth|default:"Нет данных" }}</h5><br>
+                        <h5 class="my-0">Адрес - {{ obj.address|default:"Нет данных" }}</h5><br>
+                        <h5 class="my-0">Пасспорт - {{ obj.passport_number|default:"Нет данных" }}, выдан
+                            - {{ obj.passport_issue_authority|default:"Нет данных" }}</h5><br>
+                        <h5 class="my-0">Срок действия - {{ obj.passport_validity_period|default:"Нет данных" }}</h5>
+                        <br>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="my-3"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm p-3 mb-3 bg-body-tertiary rounded">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fa-solid fa-user-graduate"></i> Сведения об образовании</h5>
+                        УСО - {{ obj.school_graduated|default:"Нет данных" }}<br>
+                        Окончил - {{ obj.school_graduating_date|default:"Нет данных" }}<br>
+                        Средний балл аттестата - {{ obj.school_average_score|default:"Нет данных" }}<br>
+                        Специальность на которой обучается - {{ obj.speciality|default:"Нет данных" }}<br>
+                        Группа - {{ obj.group|default:"Нет данных" }}<br>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm p-3 mb-3 bg-body-tertiary rounded">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fa-solid fa-person-breastfeeding"></i> Сведения о родителях
+                        </h5>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                Мать
+                                - {{ obj.mother_last_name }} {{ obj.mother_first_name }} {{ obj.mother_patronymic }}
+                                <br>
+                                Дата рождения - {{ obj.mother_date_of_birth|default:"Нет данных" }} <br>
+                                Место работы, должность - {{ obj.mother_place_of_work|default:"Нет данных" }} <br>
+                                Номер телефона - {{ obj.mother_phone_number|default:"Нет данных" }} <br>
+                                <hr class="divider d-lg-none">
+                            </div>
+                            <div class="col-lg-6">
+                                Отец
+                                - {{ obj.father_last_name }} {{ obj.father_first_name }} {{ obj.father_patronymic }}
+                                <br>
+                                Дата рождения - {{ obj.father_date_of_birth|default:"Нет данных" }} <br>
+                                Место работы, должность - {{ obj.father_place_of_work|default:"Нет данных" }} <br>
+                                Номер телефона - {{ obj.father_phone_number|default:"Нет данных" }} <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm p-3 mb-3 bg-body-tertiary rounded">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fa-solid fa-hand-holding-dollar"></i> Взыскания</h5>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Вид взыскания</th>
+                                <th>Дата наложения</th>
+                                <th>Дата истечения</th>
+                                <th>Доп. информация</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {% for punishment in punishments %}
+                                    <td>{{ punishment.punishment_kind }}</td>
+                                    <td>{{ punishment.punishment_start_date|default:"Нет данных" }}</td>
+                                    <td>{{ punishment.punishment_expiration_date|default:"Нет данных" }}</td>
+                                    <td>{{ punishment.punishment_extra_data|default:"Нет данных" }}</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm p-3 mb-3 bg-body-tertiary rounded">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fa-regular fa-credit-card"></i> Поощрения</h5>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Вид поощрения</th>
+                                <th>Дата</th>
+                                <th>Доп. информация</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {% for encouragement in encouragements %}
+                                    <td>{{ encouragement.encouragement_kind }}</td>
+                                    <td>{{ encouragement.encouragement_date }}</td>
+                                    <td>{{ encouragement.encouragement_extra_data }}</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-sm p-3 mb-3 bg-body-tertiary rounded">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fa-regular fa-star"></i> Звания</h5>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Звание</th>
+                                <th>Дата присвоения</th>
+                                <th>Доп. информация</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                {% for rank in rank_history %}
+                                    <td>{{ rank.rank }}</td>
+                                    <td>{{ rank.rank_date|default:"Нет данных" }}</td>
+                                    <td>{{ rank.extra_data|default:"Нет данных" }}</td>
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-8">
+                <div class="my-3 d-flex">
+                    <button class="btn btn-primary"><span class="fas fa-plus me-2"></span>Добавить запись
+                    </button>
+                </div>
+                {% if punishment_list %}
+                    <p class="fs-5">Найдено записей - <b>{{ filter.qs.count }}</b></p>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">
+                                    <div class="form-check ">
+                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                    </div>
+                                </th>
+                                <th scope="col">Курсант</th>
+                                <th scope="col">Вид взыскания</th>
+                                <th scope="col">Дата взыскания</th>
+                                <th scope="col">Дата окончания взыскания</th>
+                                <th scope="col">Дополнительная информация</th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-borderless">
+                            {% for punishment in punishment_list %}
+                                <tr class="align-middle">
+                                    <th scope="row" class="text-center align-middle">
+                                        <div class="form-check ">
+                                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                        </div>
+
+                                    </th>
+                                    <td>
+                                        <a href="{% url 'kis:cadet-update' punishment.punishment_cadet.id %}">{{ punishment.punishment_cadet }}</a>
+                                    </td>
+                                    <td>{{ punishment.punishment_kind|default:"" }}</td>
+                                    <td>
+                                        <a href="">{{ punishment.punishment_start_date|default:"" }}</a>
+                                    </td>
+                                    <td>{{ punishment.punishment_expiration_date|default:"" }}</td>
+                                    <td>{{ punishment.punishment_extra_data }}</td>
+                                </tr>
+                            {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                    {% include 'kis/punishment/paginator.html' %}
+                {% else %}
+                    <p class="fs-5">Записей не найдено</p>
+                {% endif %}
+            </div>
+            <div class="col-4">
+                <h5 class="my-3">Поиск по критериям</h5>
+                <form method="get" action="{% url 'kis:punishment-list' %}">
+                    <div class="mb-3">
+                        <label class="form-label">Курсант</label>
+                        {% render_field filter.form.punishment_cadet class+="form-select" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Вид взыскания</label>
+                        {% render_field filter.form.punishment_kind class+="form-select" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Дата наложения (с)</label>
+                        {% render_field filter.form.punishment_start_date_gte class+="form-control" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Дата наложения (по)</label>
+                        {% render_field filter.form.punishment_start_date_lte class+="form-control" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Дата окончания (с)</label>
+                        {% render_field filter.form.punishment_expiration_date_gte class+="form-control" %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Дата окончания (по)</label>
+                        {% render_field filter.form.punishment_expiration_date_lte class+="form-control" %}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Поиск</button>
+
+
+                </form>
+
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
