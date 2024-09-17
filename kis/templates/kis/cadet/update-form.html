@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="mb-4"></div>
+        <div class="row">
+            <div class="col-md-4">
+                <div>
+                    <img src="{{ obj.photo.url }}" class="rounded-2" alt="..." style="width: 100%">
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ obj.last_name_rus }} {{ obj.first_name_rus }} {{ obj.patronymic_rus }}</h5>
+                        Дата рождения - {{ obj.date_of_birth }}<br>
+                        Адрес - {{ obj.address }}<br>
+                        Пасспорт - {{ obj.passport_number }}, выдан - {{ obj.passport_issue_authority }}<br>
+                        Срок действия - {{ obj.passport_validity_period }}<br>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="my-3"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Сведения об образовании</h5>
+                        Дата рождения - {{ obj.date_of_birth }}<br>
+                        Адрес - {{ obj.address }}<br>
+                        Пасспорт - {{ obj.passport_number }}, выдан - {{ obj.passport_issue_authority }}<br>
+                        Срок действия - {{ obj.passport_validity_period }}<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="my-3"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Сведения о родителях</h5>
+                        Дата рождения - {{ obj.date_of_birth }}<br>
+                        Адрес - {{ obj.address }}<br>
+                        Пасспорт - {{ obj.passport_number }}, выдан - {{ obj.passport_issue_authority }}<br>
+                        Срок действия - {{ obj.passport_validity_period }}<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     <div class="my-3"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Поощрения</h5>
+                        Дата рождения - {{ obj.date_of_birth }}<br>
+                        Адрес - {{ obj.address }}<br>
+                        Пасспорт - {{ obj.passport_number }}, выдан - {{ obj.passport_issue_authority }}<br>
+                        Срок действия - {{ obj.passport_validity_period }}<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     <div class="my-3"></div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Взыскания</h5>
+                        Дата рождения - {{ obj.date_of_birth }}<br>
+                        Адрес - {{ obj.address }}<br>
+                        Пасспорт - {{ obj.passport_number }}, выдан - {{ obj.passport_issue_authority }}<br>
+                        Срок действия - {{ obj.passport_validity_period }}<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
