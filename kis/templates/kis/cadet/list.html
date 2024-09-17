@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    <div class="content" style="width: 100%">
+        <div class="row g-3 mb-4">
+            <div class="col-auto">
+                <h2 class="mb-0">Курсанты</h2>
+            </div>
+        </div>
+
+        <ul class="nav nav-links mb-3 mb-lg-2 mx-n3">
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="#"><span>Всего </span><span
+                    class="text-body-tertiary fw-semibold">(68817)</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><span>Абитуриенты </span><span
+                    class="text-body-tertiary fw-semibold">(70348)</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><span>Обучаются </span><span
+                    class="text-body-tertiary fw-semibold">(17)</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><span>Выпустились </span><span
+                    class="text-body-tertiary fw-semibold">(810)</span></a></li>
+        </ul>
+
+        <div class="mb-4">
+            <div class="d-flex flex-wrap gap-3">
+                <div class="search-box">
+                    <form class="position-relative"><input class="form-control search-input search" type="search"
+                                                           placeholder="Search products" aria-label="Search"/>
+                        <span class="fas fa-search search-box-icon"></span>
+                    </form>
+                </div>
+                <div>
+                    <div class="btn-group position-static" role="group">
+                        <div class="btn-group position-static text-nowrap">
+                            <button class="btn btn-phoenix-secondary px-7 flex-shrink-0" type="button"
+                                    data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+                                    aria-expanded="false" data-bs-reference="parent"> Категория<span
+                                    class="fas fa-angle-down ms-2"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Абитуриенты</a></li>
+                                <li><a class="dropdown-item" href="#">Обучаются</a></li>
+                                <li><a class="dropdown-item" href="#">Выпустились</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group position-static text-nowrap">
+                            <button class="btn btn-sm btn-phoenix-secondary px-7 flex-shrink-0" type="button"
+                                    data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true"
+                                    aria-expanded="false" data-bs-reference="parent"> Факультет<span
+                                    class="fas fa-angle-down ms-2"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">ФКМ</a></li>
+                                <li><a class="dropdown-item" href="#">ФМОБ</a></li>
+                                <li><a class="dropdown-item" href="#">УИФ</a></li>
+                            </ul>
+                        </div>
+                        <button class="btn btn-sm btn-phoenix-secondary px-7 flex-shrink-0">Расширенный фильтр</button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="mb-4 d-flex ">
+            <button class="btn btn-primary" id="addBtn"><span class="fas fa-plus me-2"></span>Добавить запись
+            </button>
+        </div>
+
+
+        <div class="table-responsive scrollbar mx-n1 px-1">
+            <table class="table fw-light">
+                <thead>
+                <tr>
+                    <th scope="col">
+                        <div class="form-check ">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        </div>
+                    </th>
+                    <th scope="col">Фамилия</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Отчество</th>
+                    <th scope="col">Группа</th>
+                </tr>
+                </thead>
+                <tbody class="table-borderless">
+                {% for cadet in cadet_list %}
+                    <tr>
+                        <th scope="row">
+
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+
+                        </th>
+                        <td><a href="{% url 'kis:cadet-list' %}">{{ cadet.last_name_rus }}</a></td>
+                        <td>{{ cadet.first_name_rus }}</td>
+                        <td>{{ cadet.patronymic_rus }}</td>
+                        <td>{{ cadet.group }}</td>
+                    </tr>
+                {% endfor %}
+
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+
+{% endblock %}
+
