@@ -141,6 +141,10 @@ class Encouragement(models.Model):
     def __str__(self):
         return str(self.encouragement_cadet)
 
+    @property
+    def get_encouragement_kind_str(self):
+        return self.encouragement_kind.encouragement_kind
+
     class Meta:
         ordering = ('id',)
         verbose_name = 'Поощрение'
@@ -169,6 +173,10 @@ class Punishment(models.Model):
     def __str__(self):
         return str(self.punishment_cadet)
 
+    @property
+    def get_punishment_kind_str(self):
+        return self.punishment_kind.punishment_kind
+
     class Meta:
         ordering = ('id',)
         verbose_name = 'Взыскание'
@@ -183,6 +191,10 @@ class RankHistory(models.Model):
 
     def __str__(self):
         return str(self.cadet)
+
+    @property
+    def get_rank_str(self):
+        return self.rank.rank
 
     class Meta:
         ordering = ('id',)

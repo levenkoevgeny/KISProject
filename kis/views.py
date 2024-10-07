@@ -2,8 +2,15 @@ from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
 from kis.models import Cadet
 from django.contrib.auth.decorators import login_required
-from .models import Cadet, Punishment, Encouragement, RankHistory
+from rest_framework import permissions, status, viewsets
+from rest_framework.response import Response
+
+from .models import Cadet, Punishment, Encouragement, RankHistory, Rank, EncouragementKind, PunishmentKind, Group, \
+    Speciality, Subdivision
 from .filters import CadetFilter, PunishmentFilter, EncouragementFilter, RankHistoryFilter
+from .serializers import CadetSerializer, RankSerializer, RankHistorySerializer, PunishmentSerializer, \
+    PunishmentKindSerializer, EncouragementSerializer, EncouragementKindSerializer, SpecialitySerializer, \
+    GroupSerializer, SubdivisionSerializer
 
 
 def main(request):
@@ -68,3 +75,120 @@ def punishment_list(request):
                       'punishment_list': punish_list,
                       'cadet_list': cad_list, 'filter': f
                   })
+
+
+# REST
+class CadetViewSet(viewsets.ModelViewSet):
+    queryset = Cadet.objects.all()
+    serializer_class = CadetSerializer
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RankViewSet(viewsets.ModelViewSet):
+    queryset = Rank.objects.all()
+    serializer_class = RankSerializer
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class RankHistoryViewSet(viewsets.ModelViewSet):
+    queryset = RankHistory.objects.all()
+    serializer_class = RankHistorySerializer
+    filterset_fields = {'cadet': ['exact'],
+                        'rank': ['exact'],
+                        'rank_date': ['gte', 'lte'],
+                        'extra_data': ['icontains'],
+                        }
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EncouragementKindViewSet(viewsets.ModelViewSet):
+    queryset = EncouragementKind.objects.all()
+    serializer_class = EncouragementKindSerializer
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EncouragementViewSet(viewsets.ModelViewSet):
+    queryset = Encouragement.objects.all()
+    serializer_class = EncouragementSerializer
+    filterset_fields = {'encouragement_cadet': ['exact'],
+                        'encouragement_kind': ['exact'],
+                        'encouragement_date': ['gte', 'lte'],
+                        'encouragement_extra_data': ['icontains'],
+                        }
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PunishmentViewSet(viewsets.ModelViewSet):
+    queryset = Punishment.objects.all()
+    serializer_class = PunishmentSerializer
+    filterset_fields = {'punishment_cadet': ['exact'],
+                        'punishment_kind': ['exact'],
+                        'punishment_start_date': ['gte', 'lte'],
+                        'punishment_expiration_date': ['gte', 'lte'],
+                        'punishment_extra_data': ['icontains'],
+                        }
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PunishmentKindViewSet(viewsets.ModelViewSet):
+    queryset = PunishmentKind.objects.all()
+    serializer_class = PunishmentKindSerializer
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SpecialityViewSet(viewsets.ModelViewSet):
+    queryset = Speciality.objects.all()
+    serializer_class = SpecialitySerializer
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SubdivisionViewSet(viewsets.ModelViewSet):
+    queryset = Subdivision.objects.all()
+    serializer_class = SubdivisionSerializer
+
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
