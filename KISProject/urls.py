@@ -23,7 +23,7 @@ router.register(r'subdivision', kis_views.SubdivisionViewSet)
 
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/api')),
+    path('', RedirectView.as_view(url='/api/')),
     path('api/', include(router.urls)),
     # path('', RedirectView.as_view(url="/kis/")),
     path('admin/', admin.site.urls),

@@ -81,6 +81,7 @@ def punishment_list(request):
 class CadetViewSet(viewsets.ModelViewSet):
     queryset = Cadet.objects.all()
     serializer_class = CadetSerializer
+    filterset_fields = {'last_name_rus': ['exact']}
 
     def destroy(self, *args, **kwargs):
         serializer = self.get_serializer(self.get_object())
