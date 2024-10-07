@@ -145,6 +145,10 @@ class Encouragement(models.Model):
     def get_encouragement_kind_str(self):
         return self.encouragement_kind.encouragement_kind
 
+    @property
+    def get_encouragement_cadet_str(self):
+        return self.encouragement_cadet.last_name_rus
+
     class Meta:
         ordering = ('id',)
         verbose_name = 'Поощрение'

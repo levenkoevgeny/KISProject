@@ -62,7 +62,7 @@ class EncouragementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Encouragement
         fields = ['id', 'encouragement_cadet', 'encouragement_kind', 'encouragement_date',
-                  'encouragement_extra_data', 'get_encouragement_kind_str']
+                  'encouragement_extra_data', 'get_encouragement_kind_str', 'get_encouragement_cadet_str']
 
 
 class RankHistorySerializer(serializers.ModelSerializer):
