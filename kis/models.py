@@ -113,6 +113,11 @@ class Cadet(models.Model):
     def __str__(self):
         return self.last_name_rus
 
+    @property
+    def get_full_name(self):
+        return f"{self.last_name_rus} {self.first_name_rus[0]} {self.patronymic_rus[0]}"
+
+
     class Meta:
         ordering = ('id',)
         verbose_name = 'Курсант'

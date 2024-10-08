@@ -6,7 +6,45 @@ from kis.models import (Cadet, Rank, PassportIssueAuthority, Speciality, Subdivi
 class CadetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cadet
-        fields = '__all__'
+        fields = [
+            'id',
+            'last_name_rus',
+            'first_name_rus',
+            'patronymic_rus',
+            'last_name_bel',
+            'first_name_bel',
+            'patronymic_bel',
+            'last_name_en',
+            'first_name_en',
+            'patronymic_en',
+            'date_of_birth',
+            'photo',
+            'address',
+            'passport_number',
+            'passport_issue_date',
+            'passport_validity_period',
+            'passport_issue_authority',
+            'father_last_name',
+            'father_first_name',
+            'father_patronymic',
+            'father_date_of_birth',
+            'father_place_of_work',
+            'father_phone_number',
+            'mother_last_name',
+            'mother_first_name',
+            'mother_patronymic',
+            'mother_date_of_birth',
+            'mother_place_of_work',
+            'mother_phone_number',
+            'school_graduated',
+            'school_graduating_date',
+            'school_average_score',
+            'speciality',
+            'group',
+            'academy_start_year',
+            'academy_end_year',
+            'get_full_name'
+        ]
 
 
 class RankSerializer(serializers.ModelSerializer):

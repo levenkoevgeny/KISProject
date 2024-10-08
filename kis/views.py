@@ -4,7 +4,7 @@ from kis.models import Cadet
 from django.contrib.auth.decorators import login_required
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
-
+from rest_framework.decorators import api_view
 from .models import Cadet, Punishment, Encouragement, RankHistory, Rank, EncouragementKind, PunishmentKind, Group, \
     Speciality, Subdivision
 from .filters import CadetFilter, PunishmentFilter, EncouragementFilter, RankHistoryFilter
@@ -193,3 +193,13 @@ class SubdivisionViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(self.get_object())
         super().destroy(*args, **kwargs)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def models_fields_list(request):
+    models_fields = {}
+    import django.apps
+    for model in django.apps.apps.get_models():
+        fields = [f.name for f in model._meta.fields + model._meta.many_to_many]
+        models_fields[model.__name__] = fields
+    return Response(models_fields, status=status.HTTP_200_OK)
