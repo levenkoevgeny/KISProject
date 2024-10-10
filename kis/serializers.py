@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from kis.models import (Cadet, Rank, PassportIssueAuthority, Speciality, Subdivision, Group,
-                        Punishment, PunishmentKind, EncouragementKind, Encouragement, RankHistory)
+from kis.models import (Cadet, Rank, PassportIssueAuthority, Speciality, SpecialityHistory, Subdivision,
+                        Punishment, PunishmentKind, EncouragementKind, Encouragement, RankHistory,
+                        OrderOwner, Position, PositionHistory)
 
 
 class CadetSerializer(serializers.ModelSerializer):
@@ -20,6 +21,7 @@ class CadetSerializer(serializers.ModelSerializer):
             'date_of_birth',
             'photo',
             'address',
+            'phone_number',
             'passport_number',
             'passport_issue_date',
             'passport_validity_period',
@@ -36,15 +38,26 @@ class CadetSerializer(serializers.ModelSerializer):
             'mother_date_of_birth',
             'mother_place_of_work',
             'mother_phone_number',
-            'school_graduated',
-            'school_graduating_date',
-            'school_average_score',
-            'speciality',
-            'group',
+            'education_level',
+            'education_graduated',
+            'education_graduating_year',
+            'education_average_score',
+            'education_kind',
+            'education_location_kind',
+            'subdivision',
             'academy_start_year',
             'academy_end_year',
-            'get_full_name'
+            'component_organ',
+            'entrance_category',
+            'arrived_from_go_rovd',
+            'social_status',
+            'region_for_medical_examination',
+            'military_office',
+            'extra_data',
+            'get_full_name',
+            'get_age'
         ]
+        depth = 2
 
 
 class RankSerializer(serializers.ModelSerializer):
@@ -59,29 +72,31 @@ class PassportIssueAuthoritySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SpecialitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Speciality
-        fields = '__all__'
-
-
 class SubdivisionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subdivision
         fields = '__all__'
 
 
-class GroupSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Group
-        fields = '__all__'
-
-
 class PunishmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Punishment
-        fields = ['id', 'punishment_cadet', 'punishment_kind', 'punishment_start_date', 'punishment_expiration_date',
-                  'punishment_extra_data', 'get_punishment_kind_str']
+        fields = ['id',
+                  'punishment_cadet',
+                  'punishment_kind',
+                  'punishment_start_date',
+                  'punishment_start_order_date',
+                  'punishment_start_order_number',
+                  'punishment_start_order_owner',
+                  'punishment_start_extra_data',
+                  'punishment_expiration_date',
+                  'punishment_expiration_order_date',
+                  'punishment_expiration_order_number',
+                  'punishment_expiration_order_owner',
+                  'punishment_expiration_extra_data',
+                  'get_punishment_kind_str',
+                  'get_punishment_cadet_str'
+                  ]
 
 
 class PunishmentKindSerializer(serializers.ModelSerializer):
@@ -99,12 +114,82 @@ class EncouragementKindSerializer(serializers.ModelSerializer):
 class EncouragementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Encouragement
-        fields = ['id', 'encouragement_cadet', 'encouragement_kind', 'encouragement_date',
-                  'encouragement_extra_data', 'get_encouragement_kind_str', 'get_encouragement_cadet_str']
+        fields = ['id',
+                  'encouragement_cadet',
+                  'encouragement_kind',
+                  'encouragement_date',
+                  'encouragement_order_date',
+                  'encouragement_order_number',
+                  'encouragement_order_owner',
+                  'encouragement_extra_data',
+                  'get_encouragement_kind_str',
+                  'get_encouragement_cadet_str'
+                  ]
 
 
 class RankHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = RankHistory
-        fields = ['id', 'cadet', 'rank', 'rank_date',
-                  'extra_data', 'get_rank_str']
+        fields = [
+            'id',
+            'cadet',
+            'rank',
+            'rank_date',
+            'rank_order_date',
+            'rank_order_number',
+            'rank_order_owner',
+            'rank_extra_data',
+            'get_rank_str'
+        ]
+
+
+class OrderOwnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderOwner
+        fields = ['id', 'order_owner']
+
+
+class PositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = [
+            'id',
+            'position'
+        ]
+
+
+class PositionHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PositionHistory
+        fields = [
+            'id',
+            'cadet',
+            'position',
+            'position_date',
+            'position_order_date',
+            'position_order_number',
+            'position_order_owner',
+            'position_extra_data',
+            'get_position_str'
+        ]
+
+
+class SpecialitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Speciality
+        fields = ['id', 'speciality_name']
+
+
+class SpecialityHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SpecialityHistory
+        fields = [
+            'id',
+            'cadet',
+            'speciality',
+            'speciality_order_date',
+            'speciality_order_number',
+            'speciality_order_owner',
+            'speciality_extra_data',
+            'get_speciality_str'
+        ]

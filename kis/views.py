@@ -5,12 +5,20 @@ from django.contrib.auth.decorators import login_required
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Cadet, Punishment, Encouragement, RankHistory, Rank, EncouragementKind, PunishmentKind, Group, \
-    Speciality, Subdivision
-from .filters import CadetFilter, PunishmentFilter, EncouragementFilter, RankHistoryFilter
+from .models import Cadet, Punishment, Encouragement, RankHistory, Rank, EncouragementKind, PunishmentKind, \
+    Speciality, Subdivision, Position, PositionHistory, OrderOwner, SpecialityHistory
+from .filters import CadetFilter, PunishmentFilter
 from .serializers import CadetSerializer, RankSerializer, RankHistorySerializer, PunishmentSerializer, \
     PunishmentKindSerializer, EncouragementSerializer, EncouragementKindSerializer, SpecialitySerializer, \
-    GroupSerializer, SubdivisionSerializer
+    SubdivisionSerializer, OrderOwnerSerializer, PositionSerializer, PositionHistorySerializer, \
+    SpecialityHistorySerializer
+
+
+class APIBaseViewSet(viewsets.ModelViewSet):
+    def destroy(self, *args, **kwargs):
+        serializer = self.get_serializer(self.get_object())
+        super().destroy(*args, **kwargs)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 def main(request):
@@ -78,121 +86,146 @@ def punishment_list(request):
 
 
 # REST
-class CadetViewSet(viewsets.ModelViewSet):
+class CadetViewSet(APIBaseViewSet):
     queryset = Cadet.objects.all()
     serializer_class = CadetSerializer
-    filterset_fields = {'last_name_rus': ['exact']}
+    filterset_fields = {
+        'last_name_rus': ['icontains'],
+        'first_name_rus': ['icontains'],
+        'last_name_bel': ['icontains'],
+        'first_name_bel': ['icontains'],
+        'last_name_en': ['icontains'],
+        'first_name_en': ['icontains'],
+        'date_of_birth': ['exact'],
+        'address': ['icontains'],
+        'passport_number': ['exact'],
+        'passport_issue_date': ['gte', 'lte'],
+        'passport_validity_period': ['gte', 'lte'],
+        'passport_issue_authority': ['exact'],
+        'father_date_of_birth': ['gte', 'lte'],
+        'mother_date_of_birth': ['gte', 'lte'],
+        'education_level': ['exact'],
+        'education_graduated': ['icontains'],
+        'education_graduating_year': ['gte', 'lte'],
+        'education_average_score': ['gte', 'lte'],
+        'education_kind': ['exact'],
+        'education_location_kind': ['exact'],
+        'subdivision': ['exact'],
+        'academy_start_year': ['gte', 'lte'],
+        'academy_end_year': ['gte', 'lte'],
+        'component_organ': ['exact'],
+        'entrance_category': ['exact'],
+        'arrived_from_go_rovd': ['exact'],
+        'social_status': ['exact'],
+        'region_for_medical_examination': ['exact'],
+        'military_office': ['exact'],
+        'extra_data': ['icontains'],
+    }
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class RankViewSet(viewsets.ModelViewSet):
+class RankViewSet(APIBaseViewSet):
     queryset = Rank.objects.all()
     serializer_class = RankSerializer
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class RankHistoryViewSet(viewsets.ModelViewSet):
+class RankHistoryViewSet(APIBaseViewSet):
     queryset = RankHistory.objects.all()
     serializer_class = RankHistorySerializer
     filterset_fields = {'cadet': ['exact'],
                         'rank': ['exact'],
                         'rank_date': ['gte', 'lte'],
-                        'extra_data': ['icontains'],
+                        'rank_order_date': ['gte', 'lte'],
+                        'rank_order_number': ['icontains'],
+                        'rank_order_owner': ['exact'],
+                        'rank_extra_data': ['icontains'],
                         }
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class EncouragementKindViewSet(viewsets.ModelViewSet):
+class EncouragementKindViewSet(APIBaseViewSet):
     queryset = EncouragementKind.objects.all()
     serializer_class = EncouragementKindSerializer
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class EncouragementViewSet(viewsets.ModelViewSet):
+class EncouragementViewSet(APIBaseViewSet):
     queryset = Encouragement.objects.all()
     serializer_class = EncouragementSerializer
     filterset_fields = {'encouragement_cadet': ['exact'],
                         'encouragement_kind': ['exact'],
                         'encouragement_date': ['gte', 'lte'],
+                        'encouragement_order_date': ['gte', 'lte'],
+                        'encouragement_order_number': ['icontains', ],
+                        'encouragement_order_owner': ['exact', ],
                         'encouragement_extra_data': ['icontains'],
                         }
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class PunishmentViewSet(viewsets.ModelViewSet):
+class PunishmentViewSet(APIBaseViewSet):
     queryset = Punishment.objects.all()
     serializer_class = PunishmentSerializer
     filterset_fields = {'punishment_cadet': ['exact'],
                         'punishment_kind': ['exact'],
                         'punishment_start_date': ['gte', 'lte'],
+                        'punishment_start_order_date': ['gte', 'lte'],
+                        'punishment_start_order_number': ['icontains'],
+                        'punishment_start_order_owner': ['exact'],
+                        'punishment_start_extra_data': ['icontains'],
                         'punishment_expiration_date': ['gte', 'lte'],
-                        'punishment_extra_data': ['icontains'],
+                        'punishment_expiration_order_date': ['gte', 'lte'],
+                        'punishment_expiration_order_number': ['icontains'],
+                        'punishment_expiration_order_owner': ['exact'],
+                        'punishment_expiration_extra_data': ['icontains'],
                         }
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class PunishmentKindViewSet(viewsets.ModelViewSet):
+class PunishmentKindViewSet(APIBaseViewSet):
     queryset = PunishmentKind.objects.all()
     serializer_class = PunishmentKindSerializer
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class SpecialityViewSet(viewsets.ModelViewSet):
+class SpecialityViewSet(APIBaseViewSet):
     queryset = Speciality.objects.all()
     serializer_class = SpecialitySerializer
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class SubdivisionViewSet(viewsets.ModelViewSet):
+class SubdivisionViewSet(APIBaseViewSet):
     queryset = Subdivision.objects.all()
     serializer_class = SubdivisionSerializer
 
-    def destroy(self, *args, **kwargs):
-        serializer = self.get_serializer(self.get_object())
-        super().destroy(*args, **kwargs)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class OrderOwnerViewSet(APIBaseViewSet):
+    queryset = OrderOwner.objects.all()
+    serializer_class = OrderOwnerSerializer
+
+
+class PositionViewSet(APIBaseViewSet):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+
+
+class PositionHistoryViewSet(APIBaseViewSet):
+    queryset = PositionHistory.objects.all()
+    serializer_class = PositionHistorySerializer
+    filterset_fields = {'cadet': ['exact'],
+                        'position': ['exact'],
+                        'position_date': ['gte', 'lte'],
+                        'position_order_date': ['gte', 'lte'],
+                        'position_order_number': ['icontains'],
+                        'position_order_owner': ['exact'],
+                        'position_extra_data': ['icontains'],
+                        }
+
+
+class SpecialityHistoryViewSet(APIBaseViewSet):
+    queryset = SpecialityHistory.objects.all()
+    serializer_class = SpecialityHistorySerializer
+    filterset_fields = {
+        'cadet': ['exact'],
+        'speciality': ['exact'],
+        'speciality_order_date': ['gte', 'lte'],
+        'speciality_order_number': ['icontains'],
+        'speciality_order_owner': ['exact'],
+        'speciality_extra_data': ['icontains'],
+    }
 
 
 @api_view(['GET'])
@@ -203,3 +236,8 @@ def models_fields_list(request):
         fields = [f.name for f in model._meta.fields + model._meta.many_to_many]
         models_fields[model.__name__] = fields
     return Response(models_fields, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def connection_test(request):
+    return Response('Connection is Ok!!!', status=status.HTTP_200_OK)

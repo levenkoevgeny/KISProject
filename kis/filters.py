@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
 
-from .models import Cadet, Punishment, PunishmentKind, Encouragement, EncouragementKind, RankHistory, Rank, Speciality, Group
+from .models import Cadet, Punishment, PunishmentKind, Encouragement, EncouragementKind, RankHistory, Rank, Speciality
 
 myDateInput = forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
 
@@ -15,8 +15,6 @@ class CadetFilter(django_filters.FilterSet):
     school_average_score_lte = django_filters.NumberFilter(field_name='school_average_score', lookup_expr='lte')
     speciality = django_filters.ModelMultipleChoiceFilter(field_name='speciality',
                                                         queryset=Speciality.objects.all())
-    group = django_filters.ModelMultipleChoiceFilter(field_name='group',
-                                                        queryset=Group.objects.all())
 
 
 
