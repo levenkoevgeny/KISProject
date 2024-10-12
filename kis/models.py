@@ -255,13 +255,18 @@ class Cadet(models.Model):
 
     @property
     def get_full_name(self):
-        return f"{self.last_name_rus} {self.first_name_rus[0]} {self.patronymic_rus[0]}"
+        return f"{self.last_name_rus} {self.first_name_rus[0]}. {self.patronymic_rus[0]}."
 
     @property
     def get_age(self):
         today = datetime.now().date()
         return today.year - self.date_of_birth.year - (
                 (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
+
+    @property
+    def get_rank(self):
+        rank_last_record = RankHistory.objects.filter(cadet=self).order_by('-rank_date').first()
+        return rank_last_record.rank if rank_last_record else None
 
     class Meta:
         ordering = ('id',)
@@ -314,8 +319,12 @@ class Encouragement(models.Model):
         return self.encouragement_kind.encouragement_kind
 
     @property
+    def get_encouragement_order_owner(self):
+        return self.encouragement_order_owner.order_owner
+
+    @property
     def get_encouragement_cadet_str(self):
-        return self.encouragement_cadet.last_name_rus
+        return self.encouragement_cadet.get_full_name
 
     class Meta:
         ordering = ('id',)
@@ -367,8 +376,16 @@ class Punishment(models.Model):
         return self.punishment_kind.punishment_kind
 
     @property
+    def get_punishment_start_order_owner(self):
+        return self.punishment_start_order_owner.order_owner
+
+    @property
+    def get_punishment_expiration_order_owner(self):
+        return self.punishment_expiration_order_owner.order_owner
+
+    @property
     def get_punishment_cadet_str(self):
-        return self.punishment_cadet.last_name_rus
+        return self.punishment_cadet.get_full_name
 
     class Meta:
         ordering = ('id',)
@@ -386,7 +403,7 @@ class RankHistory(models.Model):
                                          blank=True, null=True)
     rank_order_owner = models.ForeignKey(OrderOwner, on_delete=models.SET_NULL, verbose_name="Чей приказ",
                                          blank=True, null=True)
-    rank_extra_data = models.TextField(verbose_name="Дополнительная информация", blank=True, null=True)
+    rank_extra_data = models.TextField(verbose_name="Фабула", blank=True, null=True)
 
     # сделать проверку по срокам присвоения звания 45 - 50 дней
 
@@ -397,8 +414,16 @@ class RankHistory(models.Model):
     def get_rank_str(self):
         return self.rank.rank
 
+    @property
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_rank_order_owner_str(self):
+        return self.rank_order_owner.order_owner
+
     class Meta:
-        ordering = ('id',)
+        ordering = ('rank_date',)
         verbose_name = 'Присвоение звания'
         verbose_name_plural = 'Присвоение званий'
 
@@ -434,10 +459,18 @@ class PositionHistory(models.Model):
     def get_position_str(self):
         return self.position.position
 
+    @property
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_position_order_owner_str(self):
+        return self.position_order_owner.order_owner
+
     class Meta:
         ordering = ('id',)
-        verbose_name = 'Присвоение звания'
-        verbose_name_plural = 'Присвоение званий'
+        verbose_name = 'Назначение на должность'
+        verbose_name_plural = 'Назначения на должность'
 
 
 class SpecialityHistory(models.Model):
@@ -460,5 +493,5 @@ class SpecialityHistory(models.Model):
 
     class Meta:
         ordering = ('id',)
-        verbose_name = 'Присвоение звания'
-        verbose_name_plural = 'Присвоение званий'
+        verbose_name = 'Перевод на специальность'
+        verbose_name_plural = 'Переводы на специальности'

@@ -96,7 +96,7 @@ class CadetViewSet(APIBaseViewSet):
         'first_name_bel': ['icontains'],
         'last_name_en': ['icontains'],
         'first_name_en': ['icontains'],
-        'date_of_birth': ['exact'],
+        'date_of_birth': ['gte', 'lte'],
         'address': ['icontains'],
         'passport_number': ['exact'],
         'passport_issue_date': ['gte', 'lte'],

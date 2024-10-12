@@ -4,7 +4,15 @@ from kis.models import (Cadet, Rank, PassportIssueAuthority, Speciality, Special
                         OrderOwner, Position, PositionHistory)
 
 
+class RankSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rank
+        fields = '__all__'
+
+
 class CadetSerializer(serializers.ModelSerializer):
+    get_rank = RankSerializer(read_only=True)
+
     class Meta:
         model = Cadet
         fields = [
@@ -55,15 +63,13 @@ class CadetSerializer(serializers.ModelSerializer):
             'military_office',
             'extra_data',
             'get_full_name',
-            'get_age'
+            'get_age',
+            'get_rank'
         ]
         depth = 2
 
 
-class RankSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Rank
-        fields = '__all__'
+
 
 
 class PassportIssueAuthoritySerializer(serializers.ModelSerializer):
@@ -95,7 +101,9 @@ class PunishmentSerializer(serializers.ModelSerializer):
                   'punishment_expiration_order_owner',
                   'punishment_expiration_extra_data',
                   'get_punishment_kind_str',
-                  'get_punishment_cadet_str'
+                  'get_punishment_cadet_str',
+                  'get_punishment_start_order_owner',
+                  'get_punishment_expiration_order_owner'
                   ]
 
 
@@ -123,7 +131,8 @@ class EncouragementSerializer(serializers.ModelSerializer):
                   'encouragement_order_owner',
                   'encouragement_extra_data',
                   'get_encouragement_kind_str',
-                  'get_encouragement_cadet_str'
+                  'get_encouragement_cadet_str',
+                  'get_encouragement_order_owner'
                   ]
 
 
@@ -139,7 +148,9 @@ class RankHistorySerializer(serializers.ModelSerializer):
             'rank_order_number',
             'rank_order_owner',
             'rank_extra_data',
-            'get_rank_str'
+            'get_cadet_str',
+            'get_rank_str',
+            'get_rank_order_owner_str',
         ]
 
 
@@ -170,7 +181,9 @@ class PositionHistorySerializer(serializers.ModelSerializer):
             'position_order_number',
             'position_order_owner',
             'position_extra_data',
-            'get_position_str'
+            'get_position_str',
+            'get_cadet_str',
+            'get_position_order_owner_str',
         ]
 
 
