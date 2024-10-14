@@ -258,6 +258,20 @@ class Cadet(models.Model):
         return f"{self.last_name_rus} {self.first_name_rus[0]}. {self.patronymic_rus[0]}."
 
     @property
+    def get_father_full_name(self):
+        last_name = self.father_last_name if self.father_last_name else "Нет данных"
+        first_name = self.father_first_name if self.father_first_name else ""
+        patronymic = self.father_patronymic if self.father_patronymic else ""
+        return f"{last_name} {first_name} {patronymic}"
+
+    @property
+    def get_mother_full_name(self):
+        last_name = self.mother_last_name if self.mother_last_name else "Нет данных"
+        first_name = self.mother_first_name if self.mother_first_name else ""
+        patronymic = self.mother_patronymic if self.mother_patronymic else ""
+        return f"{last_name} {first_name} {patronymic}"
+
+    @property
     def get_age(self):
         today = datetime.now().date()
         return today.year - self.date_of_birth.year - (
@@ -488,8 +502,16 @@ class SpecialityHistory(models.Model):
         return str(self.cadet)
 
     @property
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
+
+    @property
     def get_speciality_str(self):
         return self.speciality.speciality_name
+
+    @property
+    def get_position_order_owner_str(self):
+        return self.speciality_order_owner.order_owner
 
     class Meta:
         ordering = ('id',)

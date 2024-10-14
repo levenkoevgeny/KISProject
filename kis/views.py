@@ -13,6 +13,8 @@ from .serializers import CadetSerializer, RankSerializer, RankHistorySerializer,
     SubdivisionSerializer, OrderOwnerSerializer, PositionSerializer, PositionHistorySerializer, \
     SpecialityHistorySerializer
 
+from .forms import CadetForm
+
 
 class APIBaseViewSet(viewsets.ModelViewSet):
     def destroy(self, *args, **kwargs):
@@ -22,7 +24,8 @@ class APIBaseViewSet(viewsets.ModelViewSet):
 
 
 def main(request):
-    return render(request, 'kis/main.html')
+    cadet_form = CadetForm()
+    return render(request, 'kis/main.html', {'form': cadet_form})
 
 
 def cadet_list(request):

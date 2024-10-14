@@ -64,12 +64,11 @@ class CadetSerializer(serializers.ModelSerializer):
             'extra_data',
             'get_full_name',
             'get_age',
-            'get_rank'
+            'get_rank',
+            'get_father_full_name',
+            'get_mother_full_name'
         ]
         depth = 2
-
-
-
 
 
 class PassportIssueAuthoritySerializer(serializers.ModelSerializer):
@@ -204,5 +203,7 @@ class SpecialityHistorySerializer(serializers.ModelSerializer):
             'speciality_order_number',
             'speciality_order_owner',
             'speciality_extra_data',
-            'get_speciality_str'
+            'get_speciality_str',
+            'get_cadet_str',
+            'get_position_order_owner_str'
         ]
