@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from kis.models import (Cadet, Rank, PassportIssueAuthority, Speciality, SpecialityHistory, Subdivision,
                         Punishment, PunishmentKind, EncouragementKind, Encouragement, RankHistory,
-                        OrderOwner, Position, PositionHistory)
+                        OrderOwner, Position, PositionHistory, EducationHistory, JobHistory, RewardHistory, Reward,
+                        ArmyService, MVDService)
 
 
 class RankSerializer(serializers.ModelSerializer):
@@ -28,8 +29,10 @@ class CadetSerializer(serializers.ModelSerializer):
             'patronymic_en',
             'date_of_birth',
             'photo',
-            'address',
+            'address_residence',
+            'address_registration',
             'phone_number',
+            'personal_number_mvd',
             'passport_number',
             'passport_issue_date',
             'passport_validity_period',
@@ -46,12 +49,6 @@ class CadetSerializer(serializers.ModelSerializer):
             'mother_date_of_birth',
             'mother_place_of_work',
             'mother_phone_number',
-            'education_level',
-            'education_graduated',
-            'education_graduating_year',
-            'education_average_score',
-            'education_kind',
-            'education_location_kind',
             'subdivision',
             'academy_start_year',
             'academy_end_year',
@@ -87,7 +84,7 @@ class PunishmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Punishment
         fields = ['id',
-                  'punishment_cadet',
+                  'cadet',
                   'punishment_kind',
                   'punishment_start_date',
                   'punishment_start_order_date',
@@ -100,7 +97,7 @@ class PunishmentSerializer(serializers.ModelSerializer):
                   'punishment_expiration_order_owner',
                   'punishment_expiration_extra_data',
                   'get_punishment_kind_str',
-                  'get_punishment_cadet_str',
+                  'get_cadet_str',
                   'get_punishment_start_order_owner',
                   'get_punishment_expiration_order_owner'
                   ]
@@ -122,7 +119,7 @@ class EncouragementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Encouragement
         fields = ['id',
-                  'encouragement_cadet',
+                  'cadet',
                   'encouragement_kind',
                   'encouragement_date',
                   'encouragement_order_date',
@@ -130,7 +127,7 @@ class EncouragementSerializer(serializers.ModelSerializer):
                   'encouragement_order_owner',
                   'encouragement_extra_data',
                   'get_encouragement_kind_str',
-                  'get_encouragement_cadet_str',
+                  'get_cadet_str',
                   'get_encouragement_order_owner'
                   ]
 
@@ -206,4 +203,98 @@ class SpecialityHistorySerializer(serializers.ModelSerializer):
             'get_speciality_str',
             'get_cadet_str',
             'get_position_order_owner_str'
+        ]
+
+
+class EducationHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EducationHistory
+        fields = [
+            "id",
+            "cadet",
+            "education_kind",
+            "education_level",
+            "education_graduated",
+            "education_graduating_start_year",
+            "education_graduating_end_year",
+            "education_average_score",
+            "education_location_kind",
+            "get_education_kind_str",
+            "get_education_level_str",
+            "get_education_location_kind_str",
+            "get_cadet_str",
+        ]
+
+
+class JobHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobHistory
+        fields = [
+            "id",
+            "cadet",
+            "job_position",
+            "job_start_year",
+            "job_end_year",
+            "organisation_name",
+            "get_cadet_str"
+        ]
+
+
+class RewardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reward
+        fields = [
+            "id",
+            "reward_title"
+        ]
+
+
+class RewardHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RewardHistory
+        fields = [
+            "id",
+            "cadet",
+            "reward_date",
+            "reason",
+            "order_owner",
+            "order_number",
+            "get_cadet_str",
+            "get_reward_str"
+        ]
+
+
+class ArmyServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ArmyService
+        fields = [
+            "id",
+            "cadet",
+            "military_organization",
+            "military_service_start",
+            "military_service_end",
+            "position",
+            "order_owner",
+            "order_date",
+            "order_number",
+            "get_cadet_str",
+            "get_order_owner_str",
+        ]
+
+
+class MVDServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MVDService
+        fields = [
+            "id",
+            "cadet",
+            "mvd_organization",
+            "mvd_service_start",
+            "mvd_service_end",
+            "position",
+            "order_owner",
+            "order_date",
+            "order_number",
+            "get_cadet_str",
+            "get_order_owner_str",
         ]

@@ -177,8 +177,57 @@ class CadetCategory(models.Model):
         verbose_name_plural = 'Категории (для курсанта)'
 
 
+class VPKCategory(models.Model):
+    category = models.CharField(max_length=255, verbose_name="Вид ВПК")
+
+    def __str__(self):
+        return self.category
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Вид ВПК'
+        verbose_name_plural = 'Виды ВПК'
+
+
+class GraduateWithHonorsCategory(models.Model):
+    category = models.CharField(max_length=255, verbose_name="Вид отличия")
+
+    def __str__(self):
+        return self.category
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Вид отличий при окончании УО'
+        verbose_name_plural = 'Виды отличий при окончании УО'
+
+
+class PPFLCategory(models.Model):
+    category = models.CharField(max_length=255, verbose_name="ППФЛ категория")
+
+    def __str__(self):
+        return self.category
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'ППФЛ категория'
+        verbose_name_plural = 'ППФЛ категории'
+
+
+class ForeignLanguage(models.Model):
+    foreign_language = models.CharField(max_length=255, verbose_name="Иностранный язык")
+
+    def __str__(self):
+        return self.foreign_language
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Иностранный язык'
+        verbose_name_plural = 'Иностранные языки'
+
+
 class Cadet(models.Model):
-    category = models.ForeignKey(CadetCategory, on_delete=models.SET_NULL, verbose_name="Категория", blank=True, null=True)
+    category = models.ForeignKey(CadetCategory, on_delete=models.SET_NULL, verbose_name="Категория", blank=True,
+                                 null=True)
     # personal data
     last_name_rus = models.CharField(max_length=30, verbose_name="Фамилия (рус)")
     first_name_rus = models.CharField(max_length=30, verbose_name="Имя (рус)")
@@ -190,15 +239,20 @@ class Cadet(models.Model):
     first_name_en = models.CharField(max_length=30, verbose_name="Имя (англ)", blank=True, null=True)
     patronymic_en = models.CharField(max_length=30, verbose_name="Отчество (англ)", blank=True, null=True)
     date_of_birth = models.DateField(verbose_name="Дата рождения", blank=True, null=True)
+    place_of_birth = models.TextField(verbose_name="Место рождения", blank=True, null=True)
     photo = models.ImageField(upload_to='media/cadets/', verbose_name="Фото", blank=True, null=True)
-    address = models.CharField(max_length=255, verbose_name="Адрес", blank=True, null=True)
+    address_residence = models.TextField(verbose_name="Место жительства (проживания)", blank=True, null=True)
+    address_registration = models.TextField(verbose_name="Место жительства (регистрация)", blank=True, null=True)
     phone_number = models.CharField(max_length=30, verbose_name="Номер телефона", blank=True, null=True)
+    personal_number_mvd = models.CharField(max_length=50, verbose_name="Личный номер", blank=True, null=True)
     # passport
     passport_number = models.CharField(max_length=100, verbose_name="Номер паспорта", blank=True, null=True)
     passport_issue_date = models.DateField(verbose_name="Дата выдачи паспорта", blank=True, null=True)
     passport_validity_period = models.DateField(verbose_name="Срок окончания действия паспорта", blank=True, null=True)
     passport_issue_authority = models.ForeignKey(PassportIssueAuthority, verbose_name="Орган выдачи паспорта",
                                                  on_delete=models.SET_NULL, blank=True, null=True)
+    identification_number = models.CharField(max_length=100, verbose_name="Идентификационный номер", blank=True,
+                                             null=True)
     # parents
     father_last_name = models.CharField(max_length=30, verbose_name="Отец - фамилия", blank=True, null=True)
     father_first_name = models.CharField(max_length=30, verbose_name="Отец - имя", blank=True, null=True)
@@ -214,18 +268,13 @@ class Cadet(models.Model):
     mother_place_of_work = models.TextField(verbose_name="Мать - место работы", blank=True, null=True)
     mother_phone_number = models.CharField(max_length=30, verbose_name="Мать - номер телефона", blank=True, null=True)
     # education
-    education_level = models.ForeignKey(EducationLevel, on_delete=models.SET_NULL,
-                                        verbose_name="Среднее образования (уровень образования)",
-                                        blank=True, null=True)
-    education_graduated = models.TextField(verbose_name="Среднее образования (наименование)", blank=True, null=True)
-    education_graduating_year = models.IntegerField(verbose_name="Среднее образования (год)", blank=True, null=True)
-    education_average_score = models.FloatField(verbose_name="Среднее образования (средний бал)", blank=True, null=True)
-    education_kind = models.ForeignKey(Education, on_delete=models.SET_NULL,
-                                       verbose_name="Среднее образования (вид учреждения образования)",
-                                       blank=True, null=True)
-    education_location_kind = models.ForeignKey(EducationLocalityKind, on_delete=models.SET_NULL,
-                                                verbose_name="Среднее образования (вид населенного пункта)",
-                                                blank=True, null=True)
+    foreign_language_was = models.ForeignKey(ForeignLanguage, on_delete=models.SET_NULL,
+                                             verbose_name="Иностранный язык (изучаемый в школе)",
+                                             blank=True, null=True)
+
+    foreign_language_will_be = models.ForeignKey(ForeignLanguage, on_delete=models.SET_NULL,
+                                                 verbose_name="Иностранный язык (изучаемый в школе)",
+                                                 blank=True, null=True, related_name='foreign_language_will_be')
 
     # academy
     subdivision = models.ForeignKey(Subdivision, verbose_name="Подразделение", on_delete=models.SET_NULL, blank=True,
@@ -249,6 +298,49 @@ class Cadet(models.Model):
     military_office = models.ForeignKey(MilitaryOffice, on_delete=models.SET_NULL,
                                         verbose_name="Военкомат", blank=True, null=True)
     extra_data = models.TextField(verbose_name="Дополнительные данные", blank=True, null=True)
+
+    # questionnaire
+
+    vpk = models.ForeignKey(VPKCategory, on_delete=models.SET_NULL, verbose_name="Военно-патриотический класс",
+                            blank=True, null=True)
+    vpk_data = models.TextField(verbose_name="Данные о ВПК", blank=True, null=True)
+    aims_to_graduate_with_honors = models.ForeignKey(GraduateWithHonorsCategory,
+                                                     verbose_name="Претендует на диплом с отличием",
+                                                     on_delete=models.SET_NULL, blank=True, null=True)
+    is_class_vpn = models.BooleanField(verbose_name="Класс военно-патриотической направленности", default=False)
+    is_class_pn = models.BooleanField(verbose_name="Класс правовой направленности", default=False)
+    is_class_other = models.BooleanField(verbose_name="Класс иной направленности", default=False)
+    has_achievements_in_sports = models.BooleanField(verbose_name="Достижения в спорте", default=False)
+    is_olympiad_winner = models.BooleanField(verbose_name="Победитель республиканских или регионалоных олимпиад",
+                                             default=False)
+
+    # army
+    health_group = models.IntegerField(verbose_name="Группа здоровья", blank=True, null=True)
+    ppfl_test = models.ForeignKey(PPFLCategory, verbose_name="ППФЛ категория", on_delete=models.SET_NULL, blank=True,
+                                  null=True)
+    medical_age_group = models.IntegerField(verbose_name="Медико-возрастная группа", blank=True, null=True)
+
+    # extra
+    needs_increased_attention = models.BooleanField(verbose_name="Требует повышенного внимания", default=False)
+    needs_psychological_support = models.BooleanField(verbose_name="Требует психологического сопровождения",
+                                                      default=False)
+    is_risk_group = models.BooleanField(verbose_name="Группа риска", default=False)
+    has_conviction = models.BooleanField(verbose_name="Имеет судимость", default=False)
+    has_dactocard = models.BooleanField(verbose_name="Имеет дактокарту", default=False)
+    has_gusb_check = models.BooleanField(verbose_name="Имеет проверку ГУСБ", default=False)
+    has_employee_in_family = models.BooleanField(verbose_name="Имеет сотрудников в семье", default=False)
+    is_orphan = models.BooleanField(verbose_name="Сирота", default=False)
+    passed_medical_examination = models.BooleanField(verbose_name="Прошел медицинскую комиссию", default=False)
+    passed_medical_examination_extra_data = models.TextField(verbose_name="Медицинская комиссия (доп. данные)",
+                                                             blank=True, null=True)
+
+    # certificate
+    has_certificate_ideas_for_Belarus = models.BooleanField(verbose_name="Сертификат 100 идей для Беларуси",
+                                                            default=False)
+    has_certificate_kind_heart = models.BooleanField(verbose_name="Сертификат Доброе сердце", default=False)
+    is_employee = models.BooleanField(verbose_name="Является сотрудником", default=False)
+
+    # exams and certificates
 
     def __str__(self):
         return self.last_name_rus
@@ -300,6 +392,166 @@ class OrderOwner(models.Model):
         verbose_name_plural = 'Чьи приказы'
 
 
+class EducationHistory(models.Model):
+    cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="Курсант")
+    education_kind = models.ForeignKey(Education, on_delete=models.SET_NULL,
+                                       verbose_name="Вид учреждения образования",
+                                       blank=True, null=True)
+    education_level = models.ForeignKey(EducationLevel, on_delete=models.SET_NULL,
+                                        verbose_name="Уровень образования",
+                                        blank=True, null=True)
+    education_graduated = models.TextField(verbose_name="Наименование учебного заведения", blank=True, null=True)
+    education_graduating_start_year = models.IntegerField(verbose_name="Год поступления", blank=True, null=True)
+    education_graduating_end_year = models.IntegerField(verbose_name="Год окончания", blank=True, null=True)
+    education_average_score = models.FloatField(verbose_name="Средний бал", blank=True, null=True)
+    education_location_kind = models.ForeignKey(EducationLocalityKind, on_delete=models.SET_NULL,
+                                                verbose_name="Вид населенного пункта",
+                                                blank=True, null=True)
+
+    def __str__(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_education_kind_str(self):
+        return self.education_kind.education
+
+    @property
+    def get_education_level_str(self):
+        return self.education_level.education_level
+
+    @property
+    def get_education_location_kind_str(self):
+        return self.education_location_kind.education_location_kind
+
+    @property
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Образование'
+        verbose_name_plural = 'Образования'
+
+
+class JobHistory(models.Model):
+    cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="Курсант")
+    job_position = models.TextField(verbose_name="Должность", blank=True, null=True)
+    job_start_year = models.IntegerField(verbose_name="Год начала работы", blank=True, null=True)
+    job_end_year = models.IntegerField(verbose_name="Год увольнения работы", blank=True, null=True)
+    organisation_name = models.TextField(verbose_name="Организация, где работал", blank=True, null=True)
+
+    def __str__(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Работа'
+        verbose_name_plural = 'Работы'
+
+
+class ArmyService(models.Model):
+    cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="Курсант")
+    military_organization = models.TextField(verbose_name="Место службы", blank=True, null=True)
+    military_service_start = models.DateField(verbose_name="Служба в армии (начало)", blank=True, null=True)
+    military_service_end = models.DateField(verbose_name="Служба в армии (окончание)", blank=True, null=True)
+    position = models.TextField(verbose_name="Должность (без сокращений)", blank=True, null=True)
+    order_owner = models.ForeignKey(OrderOwner, on_delete=models.SET_NULL, verbose_name="Чей приказ",
+                                    blank=True, null=True)
+    order_date = models.DateField(verbose_name="Дата приказа", blank=True,
+                                  null=True)
+    order_number = models.CharField(max_length=255, verbose_name="Номер приказа",
+                                    blank=True, null=True)
+
+    def __str__(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_order_owner_str(self):
+        return self.order_owner.order_owner
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Служба в армии'
+        verbose_name_plural = 'Службы в армии'
+
+
+class MVDService(models.Model):
+    cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="Курсант")
+    mvd_organization = models.TextField(verbose_name="Место службы", blank=True, null=True)
+    mvd_service_start = models.DateField(verbose_name="Служба в армии (начало)", blank=True, null=True)
+    mvd_service_end = models.DateField(verbose_name="Служба в армии (окончание)", blank=True, null=True)
+    position = models.TextField(verbose_name="Должность (без сокращений)", blank=True, null=True)
+    order_owner = models.ForeignKey(OrderOwner, on_delete=models.SET_NULL, verbose_name="Чей приказ",
+                                    blank=True, null=True)
+    order_date = models.DateField(verbose_name="Дата приказа", blank=True,
+                                  null=True)
+    order_number = models.CharField(max_length=255, verbose_name="Номер приказа",
+                                    blank=True, null=True)
+
+    def __str__(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_order_owner_str(self):
+        return self.order_owner.order_owner
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Служба в МВД'
+        verbose_name_plural = 'Службы в МВД'
+
+
+class Reward(models.Model):
+    reward_title = models.TextField(verbose_name="Название награды", blank=True, null=True)
+
+    def __str__(self):
+        return self.reward_title
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Награда'
+        verbose_name_plural = 'Награды'
+
+
+class RewardHistory(models.Model):
+    cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="Курсант")
+    reward = models.ForeignKey(Reward, on_delete=models.CASCADE, verbose_name="Награда", blank=True, null=True)
+    reward_date = models.DateField(verbose_name="Дата награды", blank=True, null=True)
+    reason = models.TextField(verbose_name="За что награжден", blank=True, null=True)
+    order_owner = models.ForeignKey(OrderOwner, on_delete=models.SET_NULL, verbose_name="Чей приказ",
+                                    blank=True, null=True)
+    order_number = models.CharField(max_length=255, verbose_name="Номер приказа",
+                                    blank=True, null=True)
+
+    def __str__(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
+
+    @property
+    def get_reward_str(self):
+        return self.reward.reward_title
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Награда присвоение'
+        verbose_name_plural = 'Награда присвоения'
+
+
 class EncouragementKind(models.Model):
     encouragement_kind = models.CharField(max_length=255, verbose_name="Вид поощрения")
 
@@ -313,7 +565,7 @@ class EncouragementKind(models.Model):
 
 
 class Encouragement(models.Model):
-    encouragement_cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="На кого")
+    cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="На кого")
     encouragement_kind = models.ForeignKey(EncouragementKind, on_delete=models.CASCADE,
                                            verbose_name="Вид поощрения")
     encouragement_date = models.DateField(verbose_name="Дата поощрения", blank=True, null=True)
@@ -326,7 +578,7 @@ class Encouragement(models.Model):
     encouragement_extra_data = models.TextField(verbose_name="Фабула", blank=True, null=True)
 
     def __str__(self):
-        return str(self.encouragement_cadet)
+        return str(self.cadet)
 
     @property
     def get_encouragement_kind_str(self):
@@ -337,8 +589,8 @@ class Encouragement(models.Model):
         return self.encouragement_order_owner.order_owner
 
     @property
-    def get_encouragement_cadet_str(self):
-        return self.encouragement_cadet.get_full_name
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
 
     class Meta:
         ordering = ('id',)
@@ -359,7 +611,7 @@ class PunishmentKind(models.Model):
 
 
 class Punishment(models.Model):
-    punishment_cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="На кого")
+    cadet = models.ForeignKey(Cadet, on_delete=models.CASCADE, verbose_name="На кого")
     punishment_kind = models.ForeignKey(PunishmentKind, on_delete=models.CASCADE, verbose_name="Вид взыскания")
     punishment_start_date = models.DateField(verbose_name="Дата начала действия взыскания", blank=True, null=True)
     punishment_start_order_date = models.DateField(verbose_name="Дата приказа наложения взыскания", blank=True,
@@ -383,7 +635,7 @@ class Punishment(models.Model):
     punishment_expiration_extra_data = models.TextField(verbose_name="Фабула о снятии", blank=True, null=True)
 
     def __str__(self):
-        return str(self.punishment_cadet)
+        return str(self.cadet)
 
     @property
     def get_punishment_kind_str(self):
@@ -398,8 +650,8 @@ class Punishment(models.Model):
         return self.punishment_expiration_order_owner.order_owner
 
     @property
-    def get_punishment_cadet_str(self):
-        return self.punishment_cadet.get_full_name
+    def get_cadet_str(self):
+        return self.cadet.get_full_name
 
     class Meta:
         ordering = ('id',)

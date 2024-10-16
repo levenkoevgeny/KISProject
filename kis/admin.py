@@ -2,7 +2,8 @@ from django.contrib import admin
 from kis.models import (CadetCategory, Cadet, Rank, PassportIssueAuthority, Speciality, Subdivision,
                         Punishment, PunishmentKind, EncouragementKind, Encouragement, RankHistory, ComponentOrgan,
                         EntranceCategory, GO_ROVD, SocialStatus, CountryRegion, MilitaryOffice, Education,
-                        EducationLevel, EducationLocalityKind, OrderOwner, Position, PositionHistory, SpecialityHistory)
+                        EducationLevel, EducationLocalityKind, OrderOwner, Position, PositionHistory, SpecialityHistory,
+                        EducationHistory, MVDService, ArmyService, JobHistory, Reward, RewardHistory)
 
 admin.site.register(CadetCategory)
 admin.site.register(Cadet)
@@ -28,3 +29,9 @@ admin.site.register(Position)
 admin.site.register(OrderOwner)
 admin.site.register(PositionHistory)
 admin.site.register(SpecialityHistory)
+admin.site.register(EducationHistory)
+admin.site.register(MVDService)
+admin.site.register(ArmyService)
+admin.site.register(JobHistory)
+admin.site.register(Reward)
+admin.site.register(RewardHistory)

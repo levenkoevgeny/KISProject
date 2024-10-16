@@ -8,7 +8,7 @@ myDateInput = forms.DateInput(format=('%Y-%m-%d'), attrs={'type': 'date'})
 
 class CadetFilter(django_filters.FilterSet):
     last_name = django_filters.CharFilter(field_name='last_name_rus', lookup_expr='icontains')
-    address = django_filters.CharFilter(field_name='address', lookup_expr='icontains')
+    address_residence = django_filters.CharFilter(field_name='address_residence', lookup_expr='icontains')
     school_graduating_year_gte = django_filters.NumberFilter(field_name='school_graduating_date__year', lookup_expr='gte')
     school_graduating_year_lte = django_filters.NumberFilter(field_name='school_graduating_date__year', lookup_expr='lte')
     school_average_score_gte = django_filters.NumberFilter(field_name='school_average_score', lookup_expr='gte')

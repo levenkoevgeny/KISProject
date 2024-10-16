@@ -6,14 +6,19 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Cadet, Punishment, Encouragement, RankHistory, Rank, EncouragementKind, PunishmentKind, \
-    Speciality, Subdivision, Position, PositionHistory, OrderOwner, SpecialityHistory
+    Speciality, Subdivision, Position, PositionHistory, OrderOwner, SpecialityHistory, EducationHistory, Reward, \
+    RewardHistory, JobHistory, ArmyService, MVDService
 from .filters import CadetFilter, PunishmentFilter
 from .serializers import CadetSerializer, RankSerializer, RankHistorySerializer, PunishmentSerializer, \
     PunishmentKindSerializer, EncouragementSerializer, EncouragementKindSerializer, SpecialitySerializer, \
     SubdivisionSerializer, OrderOwnerSerializer, PositionSerializer, PositionHistorySerializer, \
-    SpecialityHistorySerializer
+    SpecialityHistorySerializer, EducationHistorySerializer, JobHistorySerializer, RewardSerializer, \
+    RewardHistorySerializer, ArmyServiceSerializer, MVDServiceSerializer
 
 from .forms import CadetForm
+from docxtpl import DocxTemplate
+from io import BytesIO
+from django.http import FileResponse
 
 
 class APIBaseViewSet(viewsets.ModelViewSet):
@@ -100,19 +105,15 @@ class CadetViewSet(APIBaseViewSet):
         'last_name_en': ['icontains'],
         'first_name_en': ['icontains'],
         'date_of_birth': ['gte', 'lte'],
-        'address': ['icontains'],
+        'address_residence': ['icontains'],
+        'address_registration': ['icontains'],
+        'personal_number_mvd': ['icontains'],
         'passport_number': ['exact'],
         'passport_issue_date': ['gte', 'lte'],
         'passport_validity_period': ['gte', 'lte'],
         'passport_issue_authority': ['exact'],
         'father_date_of_birth': ['gte', 'lte'],
         'mother_date_of_birth': ['gte', 'lte'],
-        'education_level': ['exact'],
-        'education_graduated': ['icontains'],
-        'education_graduating_year': ['gte', 'lte'],
-        'education_average_score': ['gte', 'lte'],
-        'education_kind': ['exact'],
-        'education_location_kind': ['exact'],
         'subdivision': ['exact'],
         'academy_start_year': ['gte', 'lte'],
         'academy_end_year': ['gte', 'lte'],
@@ -152,7 +153,7 @@ class EncouragementKindViewSet(APIBaseViewSet):
 class EncouragementViewSet(APIBaseViewSet):
     queryset = Encouragement.objects.all()
     serializer_class = EncouragementSerializer
-    filterset_fields = {'encouragement_cadet': ['exact'],
+    filterset_fields = {'cadet': ['exact'],
                         'encouragement_kind': ['exact'],
                         'encouragement_date': ['gte', 'lte'],
                         'encouragement_order_date': ['gte', 'lte'],
@@ -165,7 +166,7 @@ class EncouragementViewSet(APIBaseViewSet):
 class PunishmentViewSet(APIBaseViewSet):
     queryset = Punishment.objects.all()
     serializer_class = PunishmentSerializer
-    filterset_fields = {'punishment_cadet': ['exact'],
+    filterset_fields = {'cadet': ['exact'],
                         'punishment_kind': ['exact'],
                         'punishment_start_date': ['gte', 'lte'],
                         'punishment_start_order_date': ['gte', 'lte'],
@@ -231,6 +232,83 @@ class SpecialityHistoryViewSet(APIBaseViewSet):
     }
 
 
+class EducationHistoryViewSet(APIBaseViewSet):
+    queryset = EducationHistory.objects.all()
+    serializer_class = EducationHistorySerializer
+    filterset_fields = {
+        'cadet': ['exact'],
+        'education_kind': ['exact'],
+        'education_level': ['exact'],
+        'education_graduated': ['icontains'],
+        'education_graduating_start_year': ['gte', 'lte'],
+        'education_graduating_end_year': ['gte', 'lte'],
+        'education_average_score': ['gte', 'lte'],
+    }
+
+
+class JobHistoryViewSet(APIBaseViewSet):
+    queryset = JobHistory.objects.all()
+    serializer_class = JobHistorySerializer
+    filterset_fields = {
+        'cadet': ['exact'],
+        'job_position': ['icontains'],
+        'job_start_year': ['gte', 'lte'],
+        'job_end_year': ['gte', 'lte'],
+        'organisation_name': ['icontains'],
+    }
+
+
+class RewardViewSet(APIBaseViewSet):
+    queryset = Reward.objects.all()
+    serializer_class = RewardSerializer
+    filterset_fields = {
+        'reward_title': ['icontains'],
+    }
+
+
+class RewardHistoryViewSet(APIBaseViewSet):
+    queryset = RewardHistory.objects.all()
+    serializer_class = RewardHistorySerializer
+    filterset_fields = {
+        'cadet': ['exact'],
+        'reward': ['exact'],
+        'reward_date': ['gte', 'lte'],
+        'reason': ['icontains'],
+        'order_owner': ['exact'],
+        'order_number': ['icontains']
+    }
+
+
+class ArmyServiceViewSet(APIBaseViewSet):
+    queryset = ArmyService.objects.all()
+    serializer_class = ArmyServiceSerializer
+    filterset_fields = {
+        'cadet': ['exact'],
+        'military_organization': ['icontains'],
+        'military_service_start': ['gte', 'lte'],
+        'military_service_end': ['gte', 'lte'],
+        'position': ['icontains'],
+        'order_owner': ['exact'],
+        'order_date': ['gte', 'lte'],
+        'order_number': ['icontains']
+    }
+
+
+class MVDServiceViewSet(APIBaseViewSet):
+    queryset = MVDService.objects.all()
+    serializer_class = MVDServiceSerializer
+    filterset_fields = {
+        'cadet': ['exact'],
+        'mvd_organization': ['icontains'],
+        'mvd_service_start': ['gte', 'lte'],
+        'mvd_service_end': ['gte', 'lte'],
+        'position': ['icontains'],
+        'order_owner': ['exact'],
+        'order_date': ['gte', 'lte'],
+        'order_number': ['icontains']
+    }
+
+
 @api_view(['GET'])
 def models_fields_list(request):
     models_fields = {}
@@ -244,3 +322,19 @@ def models_fields_list(request):
 @api_view(['GET'])
 def connection_test(request):
     return Response('Connection is Ok!!!', status=status.HTTP_200_OK)
+
+
+def get_document():
+    doc = DocxTemplate("my_word_template.docx")
+    context = {'company_name': "World company"}
+    doc.render(context)
+    byte_buffer = BytesIO()
+    doc.save(byte_buffer)
+    return byte_buffer, "ok_file.docx"
+
+
+@api_view(['GET'])
+def docx_test(request):
+    byte_buffer, file_name = get_document()
+    byte_buffer.seek(0)
+    return FileResponse(byte_buffer, filename="ok.docx", as_attachment=True)

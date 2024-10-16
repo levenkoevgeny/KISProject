@@ -23,6 +23,12 @@ router.register(r'subdivision', kis_views.SubdivisionViewSet)
 router.register(r'order-owner', kis_views.OrderOwnerViewSet)
 router.register(r'position', kis_views.PositionViewSet)
 router.register(r'position-history', kis_views.PositionHistoryViewSet)
+router.register(r'education-history', kis_views.EducationHistoryViewSet)
+router.register(r'job-history', kis_views.JobHistoryViewSet)
+router.register(r'army-history', kis_views.ArmyServiceViewSet)
+router.register(r'mvd-history', kis_views.MVDServiceViewSet)
+router.register(r'reward', kis_views.RewardViewSet)
+router.register(r'reward-history', kis_views.RewardHistoryViewSet)
 
 
 urlpatterns = [
@@ -30,6 +36,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/models-fields/', kis_views.models_fields_list),
     path('api/connection-test/', kis_views.connection_test),
+    path('api/docx/', kis_views.docx_test),
     # path('', RedirectView.as_view(url="/kis/")),
     path('admin/', admin.site.urls),
     path('kis/', include('kis.urls'))
