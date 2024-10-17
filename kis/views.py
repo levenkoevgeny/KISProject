@@ -108,6 +108,7 @@ class CadetViewSet(APIBaseViewSet):
         'address_residence': ['icontains'],
         'address_registration': ['icontains'],
         'personal_number_mvd': ['icontains'],
+        'marital_status': ['exact'],
         'passport_number': ['exact'],
         'passport_issue_date': ['gte', 'lte'],
         'passport_validity_period': ['gte', 'lte'],

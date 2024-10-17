@@ -33,6 +33,7 @@ class CadetSerializer(serializers.ModelSerializer):
             'address_registration',
             'phone_number',
             'personal_number_mvd',
+            'marital_status',
             'passport_number',
             'passport_issue_date',
             'passport_validity_period',

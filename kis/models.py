@@ -213,6 +213,18 @@ class PPFLCategory(models.Model):
         verbose_name_plural = 'ППФЛ категории'
 
 
+class MaritalStatus(models.Model):
+    marital_status = models.CharField(max_length=255, verbose_name="Семейное положение")
+
+    def __str__(self):
+        return self.marital_status
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Семейное положение'
+        verbose_name_plural = 'Семейные положения'
+
+
 class ForeignLanguage(models.Model):
     foreign_language = models.CharField(max_length=255, verbose_name="Иностранный язык")
 
@@ -245,6 +257,8 @@ class Cadet(models.Model):
     address_registration = models.TextField(verbose_name="Место жительства (регистрация)", blank=True, null=True)
     phone_number = models.CharField(max_length=30, verbose_name="Номер телефона", blank=True, null=True)
     personal_number_mvd = models.CharField(max_length=50, verbose_name="Личный номер", blank=True, null=True)
+    marital_status = models.ForeignKey(MaritalStatus, verbose_name="Семейное положение", on_delete=models.SET_NULL,
+                                       blank=True, null=True)
     # passport
     passport_number = models.CharField(max_length=100, verbose_name="Номер паспорта", blank=True, null=True)
     passport_issue_date = models.DateField(verbose_name="Дата выдачи паспорта", blank=True, null=True)
