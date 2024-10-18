@@ -11,6 +11,7 @@ from kis import views as kis_views
 router = routers.DefaultRouter()
 
 router.register(r'cadet', kis_views.CadetViewSet)
+router.register(r'cadet-categories', kis_views.CadetCategoryViewSet)
 router.register(r'rank', kis_views.RankViewSet)
 router.register(r'rank-history', kis_views.RankHistoryViewSet)
 router.register(r'encouragement-kind', kis_views.EncouragementKindViewSet)

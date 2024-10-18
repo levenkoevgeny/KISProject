@@ -7,13 +7,13 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Cadet, Punishment, Encouragement, RankHistory, Rank, EncouragementKind, PunishmentKind, \
     Speciality, Subdivision, Position, PositionHistory, OrderOwner, SpecialityHistory, EducationHistory, Reward, \
-    RewardHistory, JobHistory, ArmyService, MVDService
+    RewardHistory, JobHistory, ArmyService, MVDService, CadetCategory
 from .filters import CadetFilter, PunishmentFilter
 from .serializers import CadetSerializer, RankSerializer, RankHistorySerializer, PunishmentSerializer, \
     PunishmentKindSerializer, EncouragementSerializer, EncouragementKindSerializer, SpecialitySerializer, \
     SubdivisionSerializer, OrderOwnerSerializer, PositionSerializer, PositionHistorySerializer, \
     SpecialityHistorySerializer, EducationHistorySerializer, JobHistorySerializer, RewardSerializer, \
-    RewardHistorySerializer, ArmyServiceSerializer, MVDServiceSerializer
+    RewardHistorySerializer, ArmyServiceSerializer, MVDServiceSerializer, CadetCategorySerializer
 
 from .forms import CadetForm
 from docxtpl import DocxTemplate
@@ -116,6 +116,7 @@ class CadetViewSet(APIBaseViewSet):
         'father_date_of_birth': ['gte', 'lte'],
         'mother_date_of_birth': ['gte', 'lte'],
         'subdivision': ['exact'],
+        'group': ['exact'],
         'academy_start_year': ['gte', 'lte'],
         'academy_end_year': ['gte', 'lte'],
         'component_organ': ['exact'],
@@ -309,6 +310,13 @@ class MVDServiceViewSet(APIBaseViewSet):
         'order_number': ['icontains']
     }
 
+
+class CadetCategoryViewSet(APIBaseViewSet):
+    queryset = CadetCategory.objects.all()
+    serializer_class = CadetCategorySerializer
+    filterset_fields = {
+        'category': ['icontains'],
+    }
 
 @api_view(['GET'])
 def models_fields_list(request):

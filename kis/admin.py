@@ -3,7 +3,7 @@ from kis.models import (CadetCategory, Cadet, Rank, PassportIssueAuthority, Spec
                         Punishment, PunishmentKind, EncouragementKind, Encouragement, RankHistory, ComponentOrgan,
                         EntranceCategory, GO_ROVD, SocialStatus, CountryRegion, MilitaryOffice, Education,
                         EducationLevel, EducationLocalityKind, OrderOwner, Position, PositionHistory, SpecialityHistory,
-                        EducationHistory, MVDService, ArmyService, JobHistory, Reward, RewardHistory)
+                        EducationHistory, MVDService, ArmyService, JobHistory, Reward, RewardHistory, Group)
 
 admin.site.register(CadetCategory)
 admin.site.register(Cadet)
@@ -35,3 +35,4 @@ admin.site.register(ArmyService)
 admin.site.register(JobHistory)
 admin.site.register(Reward)
 admin.site.register(RewardHistory)
+admin.site.register(Group)

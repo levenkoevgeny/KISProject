@@ -2,7 +2,7 @@ from rest_framework import serializers
 from kis.models import (Cadet, Rank, PassportIssueAuthority, Speciality, SpecialityHistory, Subdivision,
                         Punishment, PunishmentKind, EncouragementKind, Encouragement, RankHistory,
                         OrderOwner, Position, PositionHistory, EducationHistory, JobHistory, RewardHistory, Reward,
-                        ArmyService, MVDService)
+                        ArmyService, MVDService, CadetCategory)
 
 
 class RankSerializer(serializers.ModelSerializer):
@@ -18,6 +18,7 @@ class CadetSerializer(serializers.ModelSerializer):
         model = Cadet
         fields = [
             'id',
+            'category',
             'last_name_rus',
             'first_name_rus',
             'patronymic_rus',
@@ -28,6 +29,7 @@ class CadetSerializer(serializers.ModelSerializer):
             'first_name_en',
             'patronymic_en',
             'date_of_birth',
+            'place_of_birth',
             'photo',
             'address_residence',
             'address_registration',
@@ -38,6 +40,7 @@ class CadetSerializer(serializers.ModelSerializer):
             'passport_issue_date',
             'passport_validity_period',
             'passport_issue_authority',
+            'identification_number',
             'father_last_name',
             'father_first_name',
             'father_patronymic',
@@ -50,7 +53,10 @@ class CadetSerializer(serializers.ModelSerializer):
             'mother_date_of_birth',
             'mother_place_of_work',
             'mother_phone_number',
+            'foreign_language_was',
+            'foreign_language_will_be',
             'subdivision',
+            'group',
             'academy_start_year',
             'academy_end_year',
             'component_organ',
@@ -60,13 +66,36 @@ class CadetSerializer(serializers.ModelSerializer):
             'region_for_medical_examination',
             'military_office',
             'extra_data',
+            'vpk',
+            'vpk_data',
+            'aims_to_graduate_with_honors',
+            'is_class_vpn',
+            'is_class_pn',
+            'is_class_other',
+            'has_achievements_in_sports',
+            'is_olympiad_winner',
+            'health_group',
+            'ppfl_test',
+            'medical_age_group',
+            'needs_increased_attention',
+            'needs_psychological_support',
+            'is_risk_group',
+            'has_conviction',
+            'has_dactocard',
+            'has_gusb_check',
+            'has_employee_in_family',
+            'is_orphan',
+            'passed_medical_examination',
+            'passed_medical_examination_extra_data',
+            'has_certificate_ideas_for_Belarus',
+            'has_certificate_kind_heart',
+            'is_employee',
             'get_full_name',
             'get_age',
             'get_rank',
             'get_father_full_name',
             'get_mother_full_name'
         ]
-        depth = 2
 
 
 class PassportIssueAuthoritySerializer(serializers.ModelSerializer):
@@ -298,4 +327,13 @@ class MVDServiceSerializer(serializers.ModelSerializer):
             "order_number",
             "get_cadet_str",
             "get_order_owner_str",
+        ]
+
+
+class CadetCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CadetCategory
+        fields = [
+            "id",
+            "category",
         ]

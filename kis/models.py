@@ -54,6 +54,18 @@ class Subdivision(models.Model):
         verbose_name_plural = 'Подразделения'
 
 
+class Group(models.Model):
+    group_name = models.CharField(max_length=255, verbose_name="Название подразделения")
+
+    def __str__(self):
+        return self.group_name
+
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
+
+
 class ComponentOrgan(models.Model):
     component_name = models.CharField(max_length=255, verbose_name="Комплектующий орган")
     component_short_name = models.CharField(max_length=50, verbose_name="Комплектующий орган (короткое название)",
@@ -241,8 +253,8 @@ class Cadet(models.Model):
     category = models.ForeignKey(CadetCategory, on_delete=models.SET_NULL, verbose_name="Категория", blank=True,
                                  null=True)
     # personal data
-    last_name_rus = models.CharField(max_length=30, verbose_name="Фамилия (рус)")
-    first_name_rus = models.CharField(max_length=30, verbose_name="Имя (рус)")
+    last_name_rus = models.CharField(max_length=30, verbose_name="Фамилия (рус)", blank=True, null=True)
+    first_name_rus = models.CharField(max_length=30, verbose_name="Имя (рус)", blank=True, null=True)
     patronymic_rus = models.CharField(max_length=30, verbose_name="Отчество (рус)", blank=True, null=True)
     last_name_bel = models.CharField(max_length=30, verbose_name="Фамилия (бел)", blank=True, null=True)
     first_name_bel = models.CharField(max_length=30, verbose_name="Имя (бел)", blank=True, null=True)
@@ -285,13 +297,14 @@ class Cadet(models.Model):
     foreign_language_was = models.ForeignKey(ForeignLanguage, on_delete=models.SET_NULL,
                                              verbose_name="Иностранный язык (изучаемый в школе)",
                                              blank=True, null=True)
-
     foreign_language_will_be = models.ForeignKey(ForeignLanguage, on_delete=models.SET_NULL,
                                                  verbose_name="Иностранный язык (изучаемый в школе)",
                                                  blank=True, null=True, related_name='foreign_language_will_be')
 
     # academy
     subdivision = models.ForeignKey(Subdivision, verbose_name="Подразделение", on_delete=models.SET_NULL, blank=True,
+                                    null=True)
+    group = models.ForeignKey(Group, verbose_name="Группа", on_delete=models.SET_NULL, blank=True,
                                     null=True)
     academy_start_year = models.IntegerField(verbose_name="Год поступления", blank=True, null=True)
     academy_end_year = models.IntegerField(verbose_name="Год окончания", blank=True, null=True)
@@ -361,7 +374,8 @@ class Cadet(models.Model):
 
     @property
     def get_full_name(self):
-        return f"{self.last_name_rus} {self.first_name_rus[0]}. {self.patronymic_rus[0]}."
+        patronymic_rus = self.patronymic_rus[0] if self.patronymic_rus else ""
+        return f"{self.last_name_rus} {self.first_name_rus[0]}. {patronymic_rus}."
 
     @property
     def get_father_full_name(self):
@@ -389,7 +403,7 @@ class Cadet(models.Model):
         return rank_last_record.rank if rank_last_record else None
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('-id',)
         verbose_name = 'Курсант'
         verbose_name_plural = 'Курсанты'
 
